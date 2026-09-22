@@ -2,7 +2,7 @@
 
 Review an assistant's proposed emails and save your decisions as data for fine-tuning a separate review model.
 
-[Interactive demo](https://habibdebaya.github.io/agent-reviewer/) · [Source code](https://github.com/habibdebaya/agent-reviewer)
+[Interactive demo](https://habibdebaya.github.io/agent-reviewer/)
 
 ## How it works
 
@@ -37,12 +37,12 @@ Reviews and downloads prepare data. Fine-tuning happens later. The optional loca
 
 The `docs` folder contains a self-contained interactive demo for reviewing sample drafts, recording decisions, and exporting training data. Decisions are stored in the visitor's browser. Live model calls and local reviewer training require the Python application.
 
-Preview it locally.
+Run a [local preview](http://127.0.0.1:8002).
 
 ```bash
 python3 -m http.server 8002 --bind 127.0.0.1 --directory docs
 ```
 
-Open [the local preview](http://127.0.0.1:8002).
+Open [the interactive demo](https://habibdebaya.github.io/agent-reviewer/).
 
 For deployment, select `main` and `/docs` as the publishing source in the [repository's Pages settings](https://github.com/habibdebaya/agent-reviewer/settings/pages).
