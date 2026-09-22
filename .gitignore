@@ -1,0 +1,17 @@
+AGENTS.md
+plan.md
+.agents/
+.codex/
+.venv/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+data/
+models/
+artifacts/

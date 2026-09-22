@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Approval Reviewer{% endblock %}</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="brand" href="/">Approval Reviewer<span class="brand-dot" aria-hidden="true"></span></a>
+    <nav aria-label="Main navigation">
+      <a href="/" {% if not request.url.path.startswith(('/examples', '/learning')) %}aria-current="page"{% endif %}>Review emails</a>
+      <a href="/examples" {% if request.url.path.startswith(('/examples', '/learning')) %}aria-current="page"{% endif %}>Fine-tuning data</a>
+    </nav>
+    <span class="environment-label">Local demo</span>
+  </header>
+  <main id="main">
+    {% if message %}<p class="notice" role="status">{{ message }}</p>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer>You are collecting decisions for a future email review model. No sending account is connected. No real email is delivered.</footer>
+</body>
+</html>

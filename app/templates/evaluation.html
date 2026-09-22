@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero"><p class="eyebrow">Reproducible offline measurement</p><h1>Evaluation</h1><p>Held-out action decisions and agent task completion are reported separately.</p></section>
+{% if error %}<section class="panel"><p>{{ error }}</p></section>{% else %}
+<section class="grid stats"><article><strong>{{ report.test_examples }}</strong><span>held-out actions</span></article><article><strong>{{ report.task_completion.completed }}</strong><span>completed tasks</span></article><article><strong>{{ report.task_completion.rate if report.task_completion.rate is not none else 'not measured' }}</strong><span>task completion rate</span></article></section>
+<section class="panel"><table><thead><tr><th>Reviewer</th><th>Incorrect approvals</th><th>Incorrect rejections</th><th>Human reviews</th><th>Handled accuracy</th></tr></thead><tbody>{% for version, metrics in report.reviewer_results.items() %}<tr><td>{{ version }}</td><td>{{ metrics.incorrect_approvals }}</td><td>{{ metrics.incorrect_rejections }}</td><td>{{ metrics.human_reviews }}</td><td>{{ metrics.handled_accuracy if metrics.handled_accuracy is not none else 'not applicable' }}</td></tr>{% endfor %}</tbody></table></section>
+<section class="panel"><p>{{ report.note }}</p><pre>{{ report.task_completion.by_status | tojson(indent=2) }}</pre></section>{% endif %}
+{% endblock %}

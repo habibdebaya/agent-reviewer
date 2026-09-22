@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "learning-approval-reviewer"
+version = "0.1.0"
+description = "A simulated task agent with a trainable approval reviewer"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115,<0.116",
+    "uvicorn>=0.30,<0.31",
+    "jinja2>=3.1,<4",
+    "python-multipart>=0.0.9,<1",
+    "python-dotenv>=1.0,<2",
+    "openai>=1.0,<3",
+    "scikit-learn>=1.5,<2",
+    "joblib>=1.3,<2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<9"]
+
+[project.scripts]
+approval-reviewer = "app.__main__:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.setuptools]
+packages = ["app"]
+
+[tool.setuptools.package-data]
+app = ["templates/*.html", "static/*.css"]

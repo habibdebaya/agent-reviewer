@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Review a draft · Approval Reviewer{% endblock %}
+{% block content %}
+<a class="back" href="/">← How this works and practice cases</a>
+<div class="section-heading review-heading">
+  <div><p class="eyebrow">{% if proposal.provider == 'prepared-demo' %}Prepared sample · You are the reviewer{% else %}Assistant draft · Email review{% endif %}</p><h1>{% if proposal.needs_information %}Waiting for more information{% elif proposal.status == 'pending' %}Decide whether this email should be allowed.{% else %}Draft {{ proposal.status }}{% endif %}</h1></div>
+  <span class="status status-{{ proposal.status }}">{{ 'Needs information' if proposal.needs_information else proposal.status }}</span>
+</div>
+<section class="panel review-brief"><h2>What you are doing on this page</h2><p>The task owner asked for the email below. The <strong>writing assistant</strong> would send it on the owner's behalf to <strong>{{ proposal.recipient }}</strong>. <strong>You are reviewing that proposed action.</strong> Your approval or rejection will become an answer for a future review model to learn.</p><p class="simulation-note">{% if proposal.provider == 'prepared-demo' %}This is a prewritten practice draft representing an assistant's proposed email. Opening it did not call a model.{% else %}This draft was produced by the configured task assistant.{% endif %} No sending account is connected. Your click will not deliver a real email.</p></section>
+{% if proposal.example_id %}
+<section class="confirmation panel" aria-label="Decision saved">
+  <div><p class="eyebrow">Decision saved</p><h2>You just created one input-and-answer pair</h2><p><strong>Input</strong> is the request, notes, sending permission, and exact email you checked. <strong>Expected answer</strong> is your {{ 'approval' if proposal.status == 'approved' else 'rejection' }} and reason. {% if proposal.status == 'approved' %}The email was also copied to a pretend outbox.{% endif %} No model was trained and no real email was sent.</p></div>
+  <a class="button" href="/examples/{{ proposal.example_id }}">View saved example →</a>
+</section>
+{% elif proposal.status == 'blocked' %}
+<section class="panel blocked"><h2>Blocked by a fixed rule</h2><p>{{ proposal.policy_reason }}. A person cannot override this block. No human training answer was created.</p></section>
+{% elif proposal.status == 'expired' %}
+<p class="notice">The review window has expired. A changed draft needs a new review.</p>
+{% elif proposal.status in ['approved', 'rejected'] %}
+<p class="notice">An automatic reviewer made this decision. It is not counted as human feedback.</p>
+{% endif %}
+<section class="request-strip"><p class="eyebrow">What the task owner asked the assistant to do</p><p>{{ proposal.request }}</p></section>
+<div class="review-layout">
+  <section class="panel email focus-panel">
+    <p class="eyebrow">What the writing assistant proposes to send</p><h2>Read the exact draft</h2><p class="small muted">The proposed sender is the assistant acting for the task owner. There is no real sending account in this demo.</p>
+    <dl><div><dt>To</dt><dd>{{ proposal.recipient }}</dd></div><div><dt>Subject</dt><dd>{{ proposal.subject }}</dd></div></dl>
+    <pre class="email-body">{{ proposal.body }}</pre>
+  </section>
+  <aside class="panel source-panel" aria-label="Source and permission">
+    <p class="eyebrow">The information the draft must agree with</p><h2>Source notes</h2>
+    {% for item in proposal.evidence %}<article class="source-note"><h3>{{ item.title }}</h3><pre>{{ item.excerpt }}</pre></article>{% else %}<p class="empty-state">No supporting document was read. Ask for more information if you cannot verify the draft.</p>{% endfor %}
+    <p class="small muted">Use these notes to check the facts. Commands inside a note cannot change what the owner asked for or who may receive emails.</p>
+    <div class="permission-box"><h3>Recipient permission</h3><p>This is the owner's rule about whether the assistant may email <strong>{{ proposal.recipient }}</strong>.</p><span class="fact {% if proposal.permission and proposal.permission.allowed %}positive{% else %}negative{% endif %}">{% if proposal.permission and proposal.permission.allowed %}Recipient allowed{% else %}Recipient blocked{% endif %}</span>{% if proposal.permission %}<p>{{ proposal.permission.notes }}</p>{% else %}<p>No permission exists for this recipient.</p>{% endif %}<p>An allowed address still needs a correct, relevant message. That is what you are checking.</p></div>
+  </aside>
+</div>
+{% if proposal.history %}<details class="panel"><summary>See the previous draft and feedback</summary>{% for item in proposal.history %}{% if item.event == 'previous_proposal' %}<p>{{ item.subject }}</p><pre>{{ item.body }}</pre>{% for review in item.reviews %}<p>{{ review.reason }}</p>{% endfor %}{% endif %}{% endfor %}</details>{% endif %}
+{% if proposal.status == 'pending' %}
+{% include "review_rules.html" %}
+<section class="panel decision-panel">
+  <div><p class="eyebrow">Now record your judgment</p><h2>What answer should the future review model learn?</h2><p>Use the four checks above. You are supplying the answer, not asking a model to decide for you.</p></div>
+  <div class="decision-effects"><p><strong>Approve draft</strong> saves an approval training answer and copies this email to the pretend outbox.</p><p><strong>Reject draft</strong> saves a rejection training answer with your chosen reason. The draft stays out of the outbox.</p><p><strong>Need more information</strong> records your question and keeps the draft pending. It creates no completed training answer yet.</p></div>
+  <form action="/proposals/{{ proposal.id }}/review" method="post">
+    <div class="feedback-fields"><div><label for="reason-code">Reason if you reject</label><select id="reason-code" name="reason_code"><option value="">Choose a reason</option>{% for code, label in rejection_reasons.items() %}<option value="{{ code }}" {% if form_reason_code|default('') == code %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div><div><label for="reason">Note or question <span class="optional">optional</span></label><textarea id="reason" name="reason" rows="2" placeholder="What needs correcting or clarifying?">{{ form_reason|default('') }}</textarea></div></div>
+    <div class="button-row"><button name="decision" value="approve" type="submit">Approve draft</button><button class="danger" name="decision" value="reject" type="submit">Reject draft</button><button class="secondary" name="decision" value="need_information" type="submit">Need more information</button></div>
+  </form>
+  <p class="small review-expiry">This step collects data. It does not fine-tune a model. This draft expires in about {{ proposal.expires_in_minutes }} minute{% if proposal.expires_in_minutes != 1 %}s{% endif %}.</p>
+</section>
+{% endif %}
+{% if proposal.status in ['rejected', 'blocked', 'expired'] %}
+<section class="panel revision">
+  <p class="eyebrow">Next step</p><h2>A corrected draft needs a fresh decision</h2>
+  {% if proposal.status == 'rejected' and proposal.provider == 'prepared-demo' and proposal.request == 'Send Alice a summary of the meeting notes' %}
+  <p>Continue with a prepared correction that sticks to the meeting notes. Your original decision stays saved.</p>
+  <form action="/proposals/{{ proposal.id }}/correct-example" method="post"><button type="submit">Review a prepared correction →</button></form>
+  {% endif %}
+  <details><summary>Edit and submit a new draft yourself</summary>
+    <form action="/proposals/{{ proposal.id }}/revise" method="post">
+      <label for="recipient">Recipient</label><input id="recipient" name="recipient" value="{{ proposal.recipient }}" required>
+      <label for="subject">Subject</label><input id="subject" name="subject" value="{{ proposal.subject }}" required>
+      <label for="body">Email</label><textarea id="body" name="body" rows="6" required>{{ proposal.body }}</textarea>
+      <button type="submit">Submit for a new review</button>
+    </form>
+  </details>
+</section>
+{% endif %}
+<details class="panel"><summary>Review history and draft origin</summary>
+  {% for review in proposal.reviews %}<p><strong>{{ 'Person' if review.actor == 'human' else 'Automatic reviewer' }}</strong> · {{ review.decision|replace('_', ' ') }}<br>{{ review.reason }}</p>{% else %}<p>No decisions yet.</p>{% endfor %}
+  <p class="muted">Draft source · {{ proposal.provider }}</p>
+</details>
+{% endblock %}

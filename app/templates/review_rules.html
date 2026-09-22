@@ -1,0 +1,8 @@
+<section class="panel review-rules" aria-labelledby="rules-heading">
+  <p class="eyebrow">The standard you are judging against</p>
+  <h2 id="rules-heading">What makes an email okay to send?</h2>
+  <p>Use the owner's request, the owner's sending rules, and the source notes. Approve only when all four checks below pass.</p>
+  <ol class="criteria-list">{% for rule in review_criteria %}<li><h3>{{ rule.title }}</h3><p>{{ rule.description }}</p></li>{% endfor %}</ol>
+  <div class="decision-key"><p><strong>Approve</strong> when all checks pass.</p><p><strong>Reject</strong> when you can identify a violation.</p><p><strong>Need more information</strong> when missing facts prevent a decision.</p></div>
+  <p class="small muted">The app automatically checks the allowed recipient list and a short protected-word list. You check whether the message is accurate and follows the request. These review rules are included in the exported model instructions.</p>
+</section>

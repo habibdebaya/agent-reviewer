@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero"><p class="eyebrow">The result of an approval</p><h1>Pretend outbox</h1><p>These are copies of the exact emails a reviewer approved. In a connected system, the writing assistant would send them to the listed recipients. This demo has no sending account, so no email was delivered.</p></section>
+<section class="panel">
+{% for message in messages %}
+  <article class="outbox-message"><p><strong>To</strong> {{ message.recipient }}</p><p><strong>{{ message.subject }}</strong></p><pre>{{ message.body }}</pre><small>{{ message.created_at }}</small></article>
+{% else %}<p class="muted">Nothing has been approved for the fake outbox.</p>{% endfor %}
+</section>
+{% endblock %}

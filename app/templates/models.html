@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero"><p class="eyebrow">Offline training</p><h1>Local reviewer</h1><p>The reviewer is a versioned TF IDF and logistic regression classifier trained on saved reviewed examples.</p></section>
+<section class="grid detail-grid">
+  <article class="panel"><p class="eyebrow">Current mode</p><h2>{{ reviewer_mode }}</h2><form action="/models/mode" method="post"><label for="mode">Handle eligible actions with</label><select id="mode" name="mode"><option value="human">Human review</option><option value="rules">Rules</option><option value="learned">Learned reviewer</option></select><button type="submit">Set mode</button></form></article>
+  <article class="panel"><p class="eyebrow">New version</p><h2>Train locally</h2><p>Only training examples are used. Validation chooses the confidence threshold. Held-out test data stays untouched.</p><form action="/models/train" method="post"><button type="submit">Train reviewer</button></form></article>
+</section>
+<section class="panel"><p class="eyebrow">Saved versions</p>{% for model in models %}<article class="model-row"><strong>{{ model.version }}</strong><span>{{ model.training_count }} training examples</span><span>threshold {{ model.threshold }}</span><small>{{ model.created_at }}</small></article>{% else %}<p class="muted">No local model has been trained yet.</p>{% endfor %}</section>
+{% endblock %}
