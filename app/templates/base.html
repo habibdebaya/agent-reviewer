@@ -4,12 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Approval Reviewer{% endblock %}</title>
+  <link rel="icon" type="image/svg+xml" sizes="any" href="/static/icon.svg">
   <link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
-    <a class="brand" href="/">Approval Reviewer<span class="brand-dot" aria-hidden="true"></span></a>
+    <a class="brand" href="/"><img class="brand-icon" src="/static/icon.svg" width="28" height="28" alt="" aria-hidden="true">Approval Reviewer</a>
     <nav aria-label="Main navigation">
       <a href="/" {% if not request.url.path.startswith(('/examples', '/learning')) %}aria-current="page"{% endif %}>Review emails</a>
       <a href="/examples" {% if request.url.path.startswith(('/examples', '/learning')) %}aria-current="page"{% endif %}>Fine-tuning data</a>

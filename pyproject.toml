@@ -31,4 +31,4 @@ testpaths = ["tests"]
 packages = ["app"]
 
 [tool.setuptools.package-data]
-app = ["templates/*.html", "static/*.css"]
+app = ["templates/*.html", "static/*.css", "static/*.svg"]

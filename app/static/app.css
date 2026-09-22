@@ -22,7 +22,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 .skip-link:focus { top: .5rem; left: .5rem; }
 .site-header { display: flex; align-items: center; gap: 3rem; padding: 1.15rem max(1.5rem, calc((100vw - 1120px) / 2)); border-bottom: 1px solid #dce4da; background: #fff; }
 .brand { display: inline-flex; align-items: center; gap: .55rem; font-size: 1rem; color: #193d2b; font-weight: 750; text-decoration: none; white-space: nowrap; }
-.brand-dot { width: 8px; height: 8px; border-radius: 50%; background: #3e8b60; }
+.brand-icon { display: block; width: 28px; height: 28px; flex-shrink: 0; }
 .site-header nav { display: flex; gap: 1.6rem; }
 .site-header nav a { font-size: .9rem; text-decoration: none; color: #6d786e; padding: .5rem 0; border-bottom: 2px solid transparent; }
 .site-header nav a[aria-current="page"] { color: #234f36; border-color: #31764c; }

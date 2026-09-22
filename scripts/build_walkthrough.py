@@ -49,6 +49,7 @@ def main():
         + json.dumps(data, ensure_ascii=False, indent=2) + ";\n", encoding="utf-8",
     )
     shutil.copyfile(ROOT / "app" / "static" / "app.css", ROOT / "docs" / "style.css")
+    shutil.copyfile(ROOT / "app" / "static" / "icon.svg", ROOT / "docs" / "icon.svg")
 
 
 if __name__ == "__main__":
