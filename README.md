@@ -1,48 +1,43 @@
-# Approval Reviewer
+# Agent Action Review
 
-Review an assistant's proposed emails and save your decisions as data for fine-tuning a separate review model.
+Human review for agent actions that automated checks can't settle. Each decision is captured with the evidence behind it and the reason given, as training data for a decision model.
 
-[Interactive demo](https://habibdebaya.github.io/agent-reviewer/)
+[Open the site](https://habibdebaya.github.io/agent-reviewer/)
 
-## How it works
+## Why
 
-1. Open a prepared email and compare it with the owner's request, source notes, and allowed recipients.
-2. Approve it, reject it with a reason, or ask for more information.
-3. Inspect and download the saved input and answer from **Fine-tuning data**.
+In practice, most actions an agent takes get settled by automated checks, meaning deterministic rules plus a trained model. Only the ones the checks can't settle with confidence reach a human. Those human decisions become the corpus that trains each customer's own decision model, and as that model improves, fewer cases need a human.
 
-Approve only when the recipient is allowed, the draft does the requested job, its claims match the notes, and it contains no protected information. Asking for more information keeps the draft pending without creating a completed training answer.
+In a gateway setup, this step sits right after approval and captures the decision with its evidence and reason.
 
-Start with **Catch a wrong detail**, reject the false claim, then review the correction. Approved drafts enter a simulated outbox. No real email is sent.
+Small organizations won't accumulate enough reviews to train on, so fine-tuning would likely need synthetic data on top. Getting that generation right is its own engineering problem, and it is out of scope here.
+
+## What this demo covers
+
+Only the human review step and the data it produces. The automated checks and the model training are not included.
+
+**Review cases.** Five emails an agent proposes to send. Each case shows the intended recipient, the data available to the agent with the one item it may share, and the proposed email. The reviewer approves it, or rejects it and says why (unapproved data or an unapproved recipient). There is no answer key. The reviewer's decision is the label.
+
+**Export training data.** Every decided case becomes one line of a JSONL file, in the chat format that fine-tuning services accept.
+
+- The system message is the review rule.
+- The user message is the evidence the reviewer saw.
+- The assistant message is the decision and reason.
+
+Everything runs in the browser. Decisions are saved in local storage and never leave the machine. There are no API keys, no server and no model calls.
 
 ## Run locally
 
-Requires Python 3.12 or newer.
-
 ```bash
-git clone https://github.com/habibdebaya/agent-reviewer.git
-cd agent-reviewer
-python3 -m venv .venv
-.venv/bin/pip install -e '.[dev]'
-.venv/bin/python -m app seed
-.venv/bin/python -m app serve
+python3 -m http.server 8000 --directory docs
 ```
 
-Open [the local app](http://127.0.0.1:8000). Prepared examples work without an API key.
+Then open http://localhost:8000.
 
-For live drafts, copy `.env.example` to `.env`, add `OPENROUTER_API_KEY`, and restart. The example configuration selects **Luna** through OpenRouter using `OPENROUTER_MODEL=openai/gpt-5.6-luna`. Live requests send your request and the workspace notes the model reads through OpenRouter. Prepared examples make no model calls.
+## Files
 
-Reviews and downloads prepare data. Fine-tuning happens later. The optional local training experiment uses a simple classifier, not Luna.
+- `docs/cases.js` holds the five cases
+- `docs/app.js` renders the pages and builds the export
+- `docs/style.css` is the stylesheet
 
-## Interactive demo
-
-The `docs` folder contains a self-contained interactive demo for reviewing sample drafts, recording decisions, and exporting training data. Decisions are stored in the visitor's browser. Live model calls and local reviewer training require the Python application.
-
-Run a [local preview](http://127.0.0.1:8002).
-
-```bash
-python3 -m http.server 8002 --bind 127.0.0.1 --directory docs
-```
-
-Open [the interactive demo](https://habibdebaya.github.io/agent-reviewer/).
-
-For deployment, select `main` and `/docs` as the publishing source in the [repository's Pages settings](https://github.com/habibdebaya/agent-reviewer/settings/pages).
+To publish, select `main` and `/docs` as the source in the repository's Pages settings.

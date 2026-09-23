@@ -1,2 +1,0 @@
-"""Learning approval reviewer application."""
-

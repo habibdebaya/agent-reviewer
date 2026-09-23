@@ -3,21 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Review a proposed email, save your decision, and download a real teaching example. An interactive approval reviewer demo.">
-  <title>Approval Reviewer</title>
-  <link rel="icon" type="image/svg+xml" sizes="any" href="icon.svg">
+  <meta name="description" content="Human review for agent actions that automated checks can't settle. Each decision is captured with its evidence and reason as training data for a decision model.">
+  <meta name="theme-color" content="#2d5fae">
+  <title>Agent Action Review</title>
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
-  <header class="site-header">
-    <a class="brand" href="#review"><img class="brand-icon" src="icon.svg" width="28" height="28" alt="" aria-hidden="true">Approval Reviewer</a>
-    <nav aria-label="Main navigation"><a href="#review" id="nav-review">Review emails</a><a href="#examples" id="nav-examples">Fine-tuning data</a></nav>
-    <span class="environment-label">Interactive demo</span>
-  </header>
-  <main id="main"><noscript><h1>Approval Reviewer</h1><p>Enable JavaScript to review prepared emails, save decisions in your browser, and download teaching examples. Nothing is sent to real accounts.</p></noscript></main>
-  <footer>You are collecting decisions for a future email review model. This interactive demo uses prepared email drafts and stores your decisions in this browser only. No sending account is connected. No real email is delivered.</footer>
-  <script src="sample-data.js"></script>
+  <main id="app"><noscript><p class="page">Enable JavaScript to use Agent Action Review.</p></noscript></main>
+  <script src="cases.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
